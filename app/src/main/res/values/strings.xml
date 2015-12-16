@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">ConvertVideoApp</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string-array name="types">
+        <item>video/avc</item>
+        <item>video/x-vnd.on2.vp8</item>
+        <item>video/x-vnd.on2.vp9</item>
+        <item>video/hevc</item>
+        <item>video/mp4v-es</item>
+        <item>video/3gpp</item>
+    </string-array>
+
+    <string-array name="end">
+        <item>.mp4</item>
+        <item>.mkv</item>
+        <item>.mkv</item>
+        <item>.mp4</item>
+        <item>.mp4</item>
+        <item>.3gp</item>
+    </string-array>
+</resources>
