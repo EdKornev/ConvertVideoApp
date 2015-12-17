@@ -3,12 +3,15 @@ package com.ub.convertvideoapp.app;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 import net.ypresto.androidtranscoder.engine.MediaTranscoderEngine;
 import net.ypresto.androidtranscoder.format.MediaFormatStrategy;
 
+import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -45,11 +48,16 @@ public class Coder {
     /**
      * From file
      * @param inPath
-     * @param outPath
-     * @param outFormatStrategy
+     * @param width
+     * @param height
+     * @param type - type which support encoder android sdk
+     * @param format - right end of format (ex: .mp4/.3gp)
+     * @param listener - interface for callback if you need
      * @throws IOException
      */
-    public void transcodeVideo(String inPath, String outPath, MediaFormatStrategy outFormatStrategy) throws IOException {
+    public void transcodeVideo(String inPath, int width, int height, String type, String format, final Coder.Listener listener) throws IOException {
+        File file = File.createTempFile("transcode_test_" + Calendar.getInstance().getTimeInMillis() + format, inPath);
+
         FileInputStream fileInputStream = null;
 
         FileDescriptor inFileDescriptor;
@@ -68,7 +76,12 @@ public class Coder {
             throw var10;
         }
 
-//        this.transcodeVideo(inFileDescriptor, outPath, outFormatStrategy);
+        CustomFormatStrategy strategy = new CustomFormatStrategy();
+        strategy.setHeight(height);
+        strategy.setWidth(width);
+        strategy.setType(type);
+
+        this.transcodeVideo(inFileDescriptor, file.getAbsolutePath(), strategy, listener);
     }
 
     /**
