@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.MediaCodecInfo;
+import android.media.MediaCodecList;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
@@ -17,13 +21,16 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 import net.ypresto.androidtranscoder.MediaTranscoder;
+import net.ypresto.androidtranscoder.format.MediaFormatPresets;
 import net.ypresto.androidtranscoder.format.MediaFormatStrategy;
 
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,8 +60,22 @@ public class MainActivity extends AppCompatActivity {
         mETHeight = (EditText) findViewById(R.id.et_height);
         mETWidth = (EditText) findViewById(R.id.et_width);
 
+        List<String> results = new ArrayList<>();
+
+        int size = MediaCodecList.getCodecCount();
+        for (int i = 0; i < size; i++) {
+            MediaCodecInfo info = MediaCodecList.getCodecInfoAt(i);
+            if (info.isEncoder()) {
+                for (String type : info.getSupportedTypes()) {
+                    if (type.startsWith("video/")) {
+                        results.add(type);
+                    }
+                }
+            }
+        }
+
         spinner = (Spinner) findViewById(R.id.s_type);
-        spinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.types)));
+        spinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, results));
 
         mDialog = new ProgressDialog(this);
         mDialog.setTitle("Decoding video ...");
@@ -97,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onTranscodeCompleted() {
                     mDialog.cancel();
-                    startActivity(new Intent(Intent.ACTION_VIEW).setDataAndType(Uri.fromFile(file), "video/mp4"));
+                    startActivity(new Intent(Intent.ACTION_VIEW).setDataAndType(Uri.fromFile(file), "video/*"));
                 }
 
                 @Override
@@ -107,8 +128,6 @@ public class MainActivity extends AppCompatActivity {
             };
 
             CustomFormatStrategy strategy = new CustomFormatStrategy();
-            strategy.setHeight(Integer.valueOf(mETHeight.getText().toString()));
-            strategy.setWidth(Integer.valueOf(mETWidth.getText().toString()));
             strategy.setType(spinner.getSelectedItem().toString());
 
             mDialog.show();

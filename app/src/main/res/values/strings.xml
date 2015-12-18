@@ -15,10 +15,10 @@
 
     <string-array name="end">
         <item>.mp4</item>
-        <item>.mkv</item>
-        <item>.mkv</item>
         <item>.mp4</item>
         <item>.mp4</item>
-        <item>.3gp</item>
+        <item>.mp4</item>
+        <item>.mp4</item>
+        <item>.mp4</item>
     </string-array>
 </resources>

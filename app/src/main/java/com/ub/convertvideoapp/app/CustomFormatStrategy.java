@@ -1,5 +1,6 @@
 package com.ub.convertvideoapp.app;
 
+import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import net.ypresto.androidtranscoder.format.MediaFormatStrategy;
 
@@ -8,9 +9,10 @@ import net.ypresto.androidtranscoder.format.MediaFormatStrategy;
  */
 public class CustomFormatStrategy implements MediaFormatStrategy {
 
-    private int width= 1280;
-    private int height = 720;
-    private static final int DEFAULT_BITRATE = 8000000;
+    private int width= 640;
+    private int height = 480;
+    private double aspect_ratio;
+    private static final int DEFAULT_BITRATE = 1546000;
     private final int mBitRate;
     private String type = "video/avc";
 
@@ -22,8 +24,8 @@ public class CustomFormatStrategy implements MediaFormatStrategy {
             MediaFormat format = MediaFormat.createVideoFormat(type, getWidth(), getHeight());
             format.setInteger("bitrate", this.mBitRate);
             format.setInteger("frame-rate", 30);
-            format.setInteger("i-frame-interval", 3);
-            format.setInteger("color-format", 2130708361);
+            format.setInteger("i-frame-interval", 5);
+            format.setInteger("color-format", MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
             return format;
 //        }
     }
@@ -54,5 +56,13 @@ public class CustomFormatStrategy implements MediaFormatStrategy {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public double getAspect_ratio() {
+        return aspect_ratio;
+    }
+
+    public void setAspect_ratio(double aspect_ratio) {
+        this.aspect_ratio = aspect_ratio;
     }
 }

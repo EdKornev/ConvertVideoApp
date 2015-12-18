@@ -1,5 +1,7 @@
 package com.ub.convertvideoapp.app;
 
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -126,6 +128,23 @@ public class Coder {
                 });
             }
         });
+    }
+
+    private void getRatio() {
+        MediaMetadataRetriever retriever = new  MediaMetadataRetriever();
+        Bitmap bmp = null;
+
+        int videoHeight = 0;
+        int videoWidth = 0;
+
+        try {
+            retriever.setDataSource("...location of your video file");
+            bmp = retriever.getFrameAtTime();
+            videoHeight=bmp.getHeight();
+            videoWidth=bmp.getWidth();
+        } catch (IllegalArgumentException e) {
+
+        }
     }
 
     public interface Listener {
