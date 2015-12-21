@@ -49,10 +49,10 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mETHeight.getText().toString().isEmpty() || mETWidth.getText().toString().isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Fill height and width", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+//                if (mETHeight.getText().toString().isEmpty() || mETWidth.getText().toString().isEmpty()) {
+//                    Toast.makeText(MainActivity.this, "Fill height and width", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
                 startActivityForResult(new Intent(Intent.ACTION_GET_CONTENT).setType("video/*"), REQUEST_CODE_PICK);
             }
         });
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_PICK) {
             final File file;
             try {
-                file = File.createTempFile("transcode_test_" + Calendar.getInstance().getTimeInMillis(), getResources().getStringArray(R.array.end)[spinner.getSelectedItemPosition()], getExternalFilesDir(null));
+                file = File.createTempFile("transcode_test_" + Calendar.getInstance().getTimeInMillis(), ".mp4", getExternalFilesDir(null));
             } catch (IOException e) {
                 Toast.makeText(this, "Failed to create temporary file.", Toast.LENGTH_LONG).show();
                 return;

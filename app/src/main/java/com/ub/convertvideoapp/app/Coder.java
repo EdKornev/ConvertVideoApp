@@ -60,6 +60,12 @@ public class Coder {
     public void transcodeVideo(String inPath, int width, int height, String type, String format, final Coder.Listener listener) throws IOException {
         File file = File.createTempFile("transcode_test_" + Calendar.getInstance().getTimeInMillis() + format, inPath);
 
+        double ratio = getRatio(inPath, listener);
+
+        if (ratio > 0) {
+            width = Double.valueOf(ratio * height).intValue();
+        }
+
         FileInputStream fileInputStream = null;
 
         FileDescriptor inFileDescriptor;
@@ -67,11 +73,13 @@ public class Coder {
             fileInputStream = new FileInputStream(inPath);
             inFileDescriptor = fileInputStream.getFD();
         } catch (IOException var10) {
+            listener.onTranscodeFailed(var10);
             if(fileInputStream != null) {
                 try {
                     fileInputStream.close();
                 } catch (IOException var9) {
                     Log.e("MediaTranscoder", "Can\'t close input stream: ", var9);
+                    listener.onTranscodeFailed(var9);
                 }
             }
 
@@ -117,8 +125,12 @@ public class Coder {
                     exception.transcodeVideo(outPath, outFormatStrategy);
                 } catch (IOException var3) {
                     Log.w("MediaTranscoder", "Transcode failed: input file (fd: " + inFileDescriptor.toString() + ") not found" + " or could not open output file (\'" + outPath + "\') .", var3);
+                    listener.onTranscodeFailed(var3);
                 } catch (RuntimeException var4) {
                     Log.e("MediaTranscoder", "Fatal error while transcoding, this might be invalid format or bug in engine or Android.", var4);
+                    listener.onTranscodeFailed(var4);
+                } catch (Exception var5) {
+                    listener.onTranscodeFailed(var5);
                 }
 
                 handler.post(new Runnable() {
@@ -130,7 +142,7 @@ public class Coder {
         });
     }
 
-    private void getRatio() {
+    private double  getRatio(String path, Coder.Listener listener) {
         MediaMetadataRetriever retriever = new  MediaMetadataRetriever();
         Bitmap bmp = null;
 
@@ -142,9 +154,13 @@ public class Coder {
             bmp = retriever.getFrameAtTime();
             videoHeight=bmp.getHeight();
             videoWidth=bmp.getWidth();
-        } catch (IllegalArgumentException e) {
 
+            return videoWidth/videoHeight;
+        } catch (IllegalArgumentException e) {
+            listener.onTranscodeFailed(e);
         }
+
+        return -1;
     }
 
     public interface Listener {

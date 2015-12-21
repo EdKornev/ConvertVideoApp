@@ -31,8 +31,26 @@ android {
     }
 }
 
+configurations {
+    releaseJars
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'net.ypresto.androidtranscoder:android-transcoder:0.1.9'
+    releaseJars 'net.ypresto.androidtranscoder:android-transcoder:0.1.9'
 }
+
+task jar {
+    from configurations.releaseJars.collect { it.isDirectory() ? it : zipTree(it) }
+}
+
+//task jar(type: Jar) {
+//    from android.sourceSets.main.java
+//}
+
+//jar.doFirst {
+//    for(file in configurations.releaseJars) {
+//        jar.merge(file)
+//    }
+//}

@@ -134,7 +134,11 @@ public class Engine {
                 this.mVideoTrackTranscoder = new VideoTrackTranscoder(this.mExtractor, trackResult.mVideoTrackIndex, videoOutputFormat, queuedMuxer);
             }
 
-            this.mVideoTrackTranscoder.setup();
+            try {
+                this.mVideoTrackTranscoder.setup();
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage(), e);
+            }
             if(audioOutputFormat == null) {
                 this.mAudioTrackTranscoder = new PassThroughTrackTranscoder(this.mExtractor, trackResult.mAudioTrackIndex, queuedMuxer, QueuedMuxer.SampleType.AUDIO);
                 this.mAudioTrackTranscoder.setup();
